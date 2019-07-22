@@ -80,7 +80,9 @@ open class AppPurchaseManager:NSObject{
             let receiptData = try Data(contentsOf: url)
             return receiptData.base64EncodedString()
         } catch {
+            #if DEBUG
             print("Error loading receipt data: \(error.localizedDescription)")
+            #endif
             return nil
         }
     }
@@ -99,6 +101,9 @@ extension AppPurchaseManager:SKProductsRequestDelegate{
     public func request(_ request: SKRequest, didFailWithError error: Error) {
         isRequestProduct = false
         delegate?.purchaseFailure(type: .GetProductListError,transaction: nil)
+        #if DEBUG
+        print("request product list error: \(error.localizedDescription)")
+        #endif
     }
 }
 
@@ -126,6 +131,9 @@ extension AppPurchaseManager:SKPaymentTransactionObserver{
     
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
         delegate?.purchaseFailure(type: .RestoreFailure, transaction: nil)
+        #if DEBUG
+        print("restore error: \(error.localizedDescription)")
+        #endif
     }
 }
 
